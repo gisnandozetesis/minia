@@ -1,17 +1,49 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
+function GrayLine ({ margin }) {
+    return (
+        <View style={{ borderBottomColor: 'gray', borderBottomWidth: 1, marginVertical: 10 }} />
+    )
+}
 
 class Inbox extends React.Component {
 
     _renderItem = ({item}) => (
-        <View key={item.id} style={{ backgroundColor: '#00ff00', flex: 1, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-start', margin: 5 }}>
+        <View key={item.id} style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch', margin: 5 }}>
             <Ionicons style={{ marginHorizontal: 5 }} name='ios-image' size={50} color='blue' />
-            <View style={{backgroundColor: '#FF0000'}}>
-                <Text style={{ backgroundColor: '#0000FF', height: 50, fontSize: 16, fontWeight: 'bold', textAlignVertical: 'center' }}>{`${item.code}: ${item.name}`}</Text>
+            <View style={{flex: 1}}>
+                <Text style={{ height: 50, fontSize: 16, fontWeight: 'bold', textAlignVertical: 'center' }}>{`${item.code}: ${item.name}`}</Text>
+                
+                <GrayLine />
 
+                {Object.values(item.channels).map(channel => (
+                    <View key={channel.id}>
+                        <View style={{ backgroundColor: '#f5f5f5', paddingVertical: 5 }}>
+                            <Text style={{fontWeight: 'bold'}}>{channel.name}</Text>
+                            <Text style={{ color: 'gray' }}>{channel.lastMessage}</Text>
+                        </View>
+                        
+                        <GrayLine />
+                        
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                            <MaterialIcons style={{ marginRight: 5 }} name='library-books' size={30} color='lightgray' />
+                            <Text style={{ height: 30, textAlignVertical: 'center' }}>Media, Links and Docs</Text>
+                        </View>
+
+                        <GrayLine />
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                            <MaterialIcons style={{ marginRight: 5 }} name='people-outline' size={30} color='lightgray' />
+                            <Text style={{ height: 30, textAlignVertical: 'center' }}>Members</Text>
+                        </View>
+
+                        <GrayLine />
+
+                    </View>
+                ))}
 
             </View>
         </View>
@@ -26,7 +58,7 @@ class Inbox extends React.Component {
 
     return (
       <View style={styles.container}>
-        <FlatList data={spaces} renderItem={this._renderItem} />
+        <FlatList data={spaces} renderItem={this._renderItem} keyExtractor={(item) => item.id} />
       </View>
     );
   }

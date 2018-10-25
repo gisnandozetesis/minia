@@ -55,7 +55,50 @@ const initialState = {
                     timeStamp: 1540328412947
                 }
             }
+        },
+        spc003: {
+            id: 'spc003',
+            code: 'XCD003',
+            name: 'Espaço de Teste 003',
+            members: {
+                usr001: true,
+                usr002: true,
+                usr003: true
+            },
+            channels: {
+                ch001: {
+                    id: 'cht031',
+                    name: 'General',
+                    lastMessage: 'Tarsila: alguem online?',
+                    timeStamp: 1540328412947
+                },
+                ch002: {
+                    id: 'cht002',
+                    name: 'Referencias',
+                    lastMessage: 'Felipe: pesquisem neste livro...',
+                    timeStamp: 1540329325531
+                }
+            }
+        },
+        spc004: {
+            id: 'spc004',
+            code: 'SGDB004',
+            name: 'Banco de dados IV',
+            members: {
+                usr001: true,
+                usr002: true,
+                usr003: true
+            },
+            channels: {
+                ch003: {
+                    id: 'cht003',
+                    name: 'General',
+                    lastMessage: 'Gisnando: CREATE TABLE',
+                    timeStamp: 1540328412947
+                }
+            }
         }
+
     }
 };
 
