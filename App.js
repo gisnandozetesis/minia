@@ -9,7 +9,7 @@ import { purple, white } from './utils/colors';
 import miniaReducer from './reducers';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-
+import * as firebase from 'firebase';
 
 function MiniaStatusBar ({backgroundColor, ...props}) {
   return (
@@ -57,6 +57,18 @@ const Tabs = createMaterialTopTabNavigator({
 
 export default class App extends React.Component {
   render() {
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAnhm2WNK8mDTwGK1Cp8iIjeKoMHhnnwTU",
+      authDomain: "minia-dev.firebaseapp.com",
+      databaseURL: "https://minia-dev.firebaseio.com",
+      storageBucket: "minia-dev.appspot.com"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+
+
+
     return (
       <Provider store={createStore(miniaReducer)}>
         <View style={{flex: 1}}>
