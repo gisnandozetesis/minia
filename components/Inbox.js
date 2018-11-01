@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { spaceSearchResult } from '../actions';
+import * as firebase from 'firebase';
+
 
 function GrayLine ({ margin }) {
     return (
@@ -49,19 +52,32 @@ class Inbox extends React.Component {
         </View>
     )
 
-  render() {
-    console.log("props", this.props);
+    componentDidMount() {
+        const { spaceSearchResultProp } = this.props;
 
-    const spaces = Object.values(this.props.spaces);
+        firebase.database().ref('spaces').on('value', (snapshot) => {
 
-    console.log("spaces", spaces);
+            const spaces = snapshot.val();
 
-    return (
-      <View style={styles.container}>
-        <FlatList data={spaces} renderItem={this._renderItem} keyExtractor={(item) => item.id} />
-      </View>
-    );
-  }
+            spaceSearchResultProp(spaces);
+
+            console.log("Users:", spaces);
+        });
+    }
+
+    render() {
+        console.log("props", this.props);
+
+        const spaces = Object.values(this.props.spaces);
+
+        console.log("spaces", spaces);
+
+        return (
+        <View style={styles.container}>
+            <FlatList data={spaces} renderItem={this._renderItem} keyExtractor={(item) => item.id} />
+        </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -71,10 +87,21 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapStateToProps (state) {
-    return {
-      ...state
-    };
-  }
+function mapStateToProps(miniaReducer) {
+    const { spaces } = miniaReducer;
 
-export default connect(mapStateToProps)(Inbox);
+    return {
+        spaces
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        spaceSearchResultProp: (spaces) => dispatch(spaceSearchResult(spaces))
+    }
+}
+  
+  
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Inbox);

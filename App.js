@@ -61,8 +61,7 @@ export default class App extends React.Component {
     const firebaseConfig = {
       apiKey: "AIzaSyAnhm2WNK8mDTwGK1Cp8iIjeKoMHhnnwTU",
       authDomain: "minia-dev.firebaseapp.com",
-      databaseURL: "https://minia-dev.firebaseio.com",
-      storageBucket: "minia-dev.appspot.com"
+      databaseURL: "https://minia-dev.firebaseio.com"
     };
     
     firebase.initializeApp(firebaseConfig);

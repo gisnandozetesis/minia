@@ -1,111 +1,17 @@
-const initialState = {
-    users: {
-        usr001: {
-            id: 'usr001',
-            name: 'Gisnando Kfuri'
-        },
-        usr002: {
-            id: 'usr002',
-            name: 'Tarsila de Conti'
-        },
-        usr003: {
-            id: 'usr003',
-            name: 'Felipe Olmos'
-        }
-    },
-    spaces: {
-        spc001: {
-            id: 'spc001',
-            code: 'ESPA001',
-            name: 'Espaço 001',
-            members: {
-                usr001: true,
-                usr002: true,
-                usr003: true
-            },
-            channels: {
-                ch001: {
-                    id: 'cht001',
-                    name: 'General',
-                    lastMessage: 'Tarsila: tchau! ;)',
-                    timeStamp: 1540328412947
-                },
-                ch002: {
-                    id: 'cht002',
-                    name: 'General #2',
-                    lastMessage: 'Gisnando: qual tela?',
-                    timeStamp: 1540329325531
-                }
-            }
-        },
-        spc002: {
-            id: 'spc002',
-            code: 'ESPA002',
-            name: 'Espaço 002',
-            members: {
-                usr001: true,
-                usr002: true,
-                usr003: true
-            },
-            channels: {
-                ch003: {
-                    id: 'cht003',
-                    name: 'General',
-                    lastMessage: 'Tarsila: Bom dia!',
-                    timeStamp: 1540328412947
-                }
-            }
-        },
-        spc003: {
-            id: 'spc003',
-            code: 'XCD003',
-            name: 'Espaço de Teste 003',
-            members: {
-                usr001: true,
-                usr002: true,
-                usr003: true
-            },
-            channels: {
-                ch001: {
-                    id: 'cht031',
-                    name: 'General',
-                    lastMessage: 'Tarsila: alguem online?',
-                    timeStamp: 1540328412947
-                },
-                ch002: {
-                    id: 'cht002',
-                    name: 'Referencias',
-                    lastMessage: 'Felipe: pesquisem neste livro...',
-                    timeStamp: 1540329325531
-                }
-            }
-        },
-        spc004: {
-            id: 'spc004',
-            code: 'SGDB004',
-            name: 'Banco de dados IV',
-            members: {
-                usr001: true,
-                usr002: true,
-                usr003: true
-            },
-            channels: {
-                ch003: {
-                    id: 'cht003',
-                    name: 'General',
-                    lastMessage: 'Gisnando: CREATE TABLE',
-                    timeStamp: 1540328412947
-                }
-            }
-        }
+import { SPACE_SEARCH_RESULT } from '../actions';
 
-    }
-};
+function miniaReducer (state = {}, action) {
 
+    const { spaces } = action;
 
-
-function miniaReducer (state = initialState, action) {
     switch (action.type) {
+        case SPACE_SEARCH_RESULT :
+
+            return {
+                ...state,
+                spaces
+            };
+
       default :
         return state
     }
