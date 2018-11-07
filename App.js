@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
-import { createMaterialTopTabNavigator } from 'react-navigation';
+import { createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 import Home from './components/Home';
 import Inbox from './components/Inbox';
+import Chat from './components/Chat';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Constants } from 'expo';
 import { purple, white } from './utils/colors';
@@ -23,14 +24,14 @@ const Tabs = createMaterialTopTabNavigator({
   Inbox: {
     screen: Inbox,
     navigationOptions: {
-      tabBarLabel: 'Inbox',
+      tabBarLabel: 'Disciplinas',
       tabBarIcon: ({ tintColor }) => <Ionicons name='ios-bookmarks' size={30} color={tintColor} />
     },
   },
   Home2: {
     screen: Home,
     navigationOptions: {
-      tabBarLabel: 'Home 2',
+      tabBarLabel: 'Mensagens',
       tabBarIcon: ({ tintColor }) => <FontAwesome name='plus-square' size={30} color={tintColor} />
     },
   }
@@ -52,7 +53,23 @@ const Tabs = createMaterialTopTabNavigator({
       shadowOpacity: 1
     }
   }
-})
+});
+
+const MainNavigator = createStackNavigator({
+  Home: {
+    screen: Tabs,
+  },
+  Chat: {
+    screen: Chat,
+    navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: purple,
+      }
+    }
+  }
+});
+
 
 
 export default class App extends React.Component {
@@ -72,7 +89,7 @@ export default class App extends React.Component {
       <Provider store={createStore(miniaReducer)}>
         <View style={{flex: 1}}>
           <MiniaStatusBar backgroundColor={purple} barStyle="light-content" />
-          <Tabs />
+          <MainNavigator />
         </View>
       </Provider>
     );

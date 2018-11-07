@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { spaceSearchResult } from '../actions';
@@ -22,31 +22,28 @@ class Inbox extends React.Component {
                 
                 <GrayLine />
 
-                {Object.values(item.channels).map(channel => (
-                    <View key={channel.id}>
-                        <View style={{ backgroundColor: '#f5f5f5', paddingVertical: 5 }}>
-                            <Text style={{fontWeight: 'bold'}}>{channel.name}</Text>
-                            <Text style={{ color: 'gray' }}>{channel.lastMessage}</Text>
-                        </View>
-                        
-                        <GrayLine />
-                        
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                            <MaterialIcons style={{ marginRight: 5 }} name='library-books' size={30} color='lightgray' />
-                            <Text style={{ height: 30, textAlignVertical: 'center' }}>Media, Links and Docs</Text>
-                        </View>
-
-                        <GrayLine />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                            <MaterialIcons style={{ marginRight: 5 }} name='people-outline' size={30} color='lightgray' />
-                            <Text style={{ height: 30, textAlignVertical: 'center' }}>Members</Text>
-                        </View>
-
-                        <GrayLine />
-
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Chat', { entryId: item.code })}>
+                    <View style={{ backgroundColor: '#f5f5f5', paddingVertical: 5 }}>
+                        <Text style={{fontWeight: 'bold'}}>{item.lastMessage.sender}</Text>
+                        <Text style={{ color: 'gray' }}>{item.lastMessage.content}</Text>
                     </View>
-                ))}
+                </TouchableOpacity>
+                
+                <GrayLine />
+                
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                    <MaterialIcons style={{ marginRight: 5 }} name='library-books' size={30} color='lightgray' />
+                    <Text style={{ height: 30, textAlignVertical: 'center' }}>Media, Links and Docs</Text>
+                </View>
+
+                <GrayLine />
+
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                    <MaterialIcons style={{ marginRight: 5 }} name='people-outline' size={30} color='lightgray' />
+                    <Text style={{ height: 30, textAlignVertical: 'center' }}>Members</Text>
+                </View>
+
+                <GrayLine />
 
             </View>
         </View>
@@ -60,17 +57,17 @@ class Inbox extends React.Component {
             const spaces = snapshot.val();
 
             spaceSearchResultProp(spaces);
-
-            console.log("Users:", spaces);
         });
     }
 
     render() {
-        console.log("props", this.props);
+        if (!this.props.spaces)
+            return (
+                <View></View>
+            )
+
 
         const spaces = Object.values(this.props.spaces);
-
-        console.log("spaces", spaces);
 
         return (
         <View style={styles.container}>
