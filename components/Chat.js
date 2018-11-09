@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { spaceSearchResult } from '../actions';
 import * as firebase from 'firebase';
+import uuid from 'react-native-uuid';
 
 class Chat extends React.Component {
 
     state = {
         messages: [],
-        newMessage: ''
+        newMessage: 'teste de msg enviada'
     }
 
     componentWillMount() {
@@ -53,17 +54,21 @@ class Chat extends React.Component {
     sendMessage = () => {
         const { newMessage } = this.state;
 
+        console.log('newMessage', newMessage);
+
         if (newMessage) {
             const { navigation } = this.props;
             const chatId = navigation.getParam('chatId', 'NO-ID');
 
-            console.log('chatId', chatId);
-    
-            const messagesRef = firebase.database().ref(`messages/${chatId}`);
+            const messageId = uuid.v4();
+
+            console.log('messageId', messageId);
+
+            const messagesRef = firebase.database().ref(`messages/${chatId}/${messageId}`);
 
             messagesRef.set({
                 content: newMessage,
-                id: Date.now(),
+                id: messageId,
                 sender: 'usr01',
                 timestamp: Date.now()
             });
