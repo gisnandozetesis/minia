@@ -10,7 +10,7 @@ import { purple, white } from '../utils/colors';
 class Chat extends React.Component {
 
     state = {
-        messages: [],
+        messages: {},
         newMessage: ''
     }
 
@@ -21,35 +21,54 @@ class Chat extends React.Component {
 
         const messagesRef = firebase.database().ref(`messages/${chatId}`);
 
-        // messagesRef.once('value', (snapshot) => {
+        messagesRef.once('value', (snapshot) => {
 
-        //     const messages = snapshot.val();
+            const messages = snapshot.val();
 
-        //     if (messages) {
-        //         const messageArray = Object.values(messages);
+            if (messages) {
 
-        //         this.setState({
-        //             messages: messageArray
-        //         });
-        //     }
-        // });
+                const messagesObject = {};
 
-        messagesRef.on('child_added', (data) => {
+                for (var key in messages) {
+                    const message = messages[key];
+                    message.id = key;
 
-            const message = data.val();
+                    messagesObject[key] = message;
+                }
 
-            this.setState(state => {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        messages: {
+                            ...state.messages,
+                            ...messagesObject
+                        }
+                    };
+                });
+            }
+        }).then(() => {
 
-                console.log('oldState', state);
+            messagesRef.on('child_added', (data) => {
 
-                state.messages.push(message);
-
-                console.log('newState', state);
-
-                return state;
-            })
-
+                const message = data.val();
+    
+                message.id = data.key;
+    
+                this.setState(state => {
+    
+                    return {
+                        ...state,
+                        messages: {
+                            ...state.messages,
+                            [message.id]: message
+                        }
+                    }
+                })
+    
+            });
+    
         });
+
     }
 
     sendMessage = () => {
@@ -63,13 +82,10 @@ class Chat extends React.Component {
 
             const messageId = uuid.v4();
 
-            console.log('messageId', messageId);
-
             const messagesRef = firebase.database().ref(`messages/${chatId}/${messageId}`);
 
             messagesRef.set({
                 content: newMessage,
-                id: messageId,
                 sender: 'usr01',
                 timestamp: Date.now()
             });
@@ -82,14 +98,16 @@ class Chat extends React.Component {
 
 
     render() {
-        const { messages } = this.state;
+        const messages = Object.values(this.state.messages);//.sort((a, b) => a.timestamp - b.timestamp);
 
         return (
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start' }}>
-                {messages.map(msg => (<Text key={msg.id}>{msg.content}</Text>))}
+            <View style={ styles.container }>
+                <View style={{ flexGrow: 1, marginBottom: 5, backgroundColor: '#eee'}}>
+                    {messages.map(msg => (<Text key={msg.id}>{msg.content}</Text>))}
+                </View>
 
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', alignSelf: 'stretch', backgroundColor: '#ff0000' }}>
-                    <TextInput style={{ alignSelf: 'stretch' }} value={this.state.newMessage} onChangeText={(text) => this.setState({ newMessage: text })} />
+                <View style={{ flexDirection: 'row' }}>
+                    <TextInput style={{ flexGrow: 1 }} value={this.state.newMessage} onChangeText={(text) => this.setState({ newMessage: text })} />
 
                     <TouchableOpacity style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.AndroidSubmitBtn} onPress={this.sendMessage}>
                         <Text style={styles.submitBtnText}>Send</Text>
@@ -104,7 +122,10 @@ class Chat extends React.Component {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 20,
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      padding: 5,
       backgroundColor: white
     },
     row: {
@@ -125,12 +146,9 @@ const styles = StyleSheet.create({
       padding: 10,
       paddingLeft: 30,
       paddingRight: 30,
-      marginRight: 10,
+      marginRight: 0,
       height: 35,
-      borderRadius: 2,
-      alignSelf: 'flex-end',
-      justifyContent: 'center',
-      alignItems: 'center',
+      borderRadius: 2
     },
     submitBtnText: {
       color: white,
