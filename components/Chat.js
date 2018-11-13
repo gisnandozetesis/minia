@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { spaceSearchResult } from '../actions';
 import * as firebase from 'firebase';
-import uuid from 'react-native-uuid';
 import { purple, white } from '../utils/colors';
 
 class Chat extends React.Component {
@@ -21,52 +20,50 @@ class Chat extends React.Component {
 
         const messagesRef = firebase.database().ref(`messages/${chatId}`);
 
-        messagesRef.once('value', (snapshot) => {
+        // messagesRef.once('value', (snapshot) => {
 
-            const messages = snapshot.val();
+        //     const messages = snapshot.val();
 
-            if (messages) {
+        //     if (messages) {
 
-                const messagesObject = {};
+        //         const messagesObject = {};
 
-                for (var key in messages) {
-                    const message = messages[key];
-                    message.id = key;
+        //         for (var key in messages) {
+        //             const message = messages[key];
+        //             message.id = key;
 
-                    messagesObject[key] = message;
-                }
+        //             messagesObject[key] = message;
+        //         }
 
-                this.setState(state => {
-                    return {
-                        ...state,
-                        messages: {
-                            ...state.messages,
-                            ...messagesObject
-                        }
-                    };
-                });
-            }
-        }).then(() => {
+        //         this.setState(state => {
+        //             return {
+        //                 ...state,
+        //                 messages: {
+        //                     ...state.messages,
+        //                     ...messagesObject
+        //                 }
+        //             };
+        //         });
+        //     }
+        // });
 
-            messagesRef.on('child_added', (data) => {
+        messagesRef.on('child_added', (data) => {
 
-                const message = data.val();
-    
-                message.id = data.key;
-    
-                this.setState(state => {
-    
-                    return {
-                        ...state,
-                        messages: {
-                            ...state.messages,
-                            [message.id]: message
-                        }
+            const message = data.val();
+
+            message.id = data.key;
+
+            this.setState(state => {
+
+                return {
+                    ...state,
+                    messages: {
+                        ...state.messages,
+                        [message.id]: message
                     }
-                })
-    
-            });
-    
+                }
+            })
+
         });
 
     }
@@ -80,11 +77,9 @@ class Chat extends React.Component {
             const { navigation } = this.props;
             const chatId = navigation.getParam('chatId', 'NO-ID');
 
-            const messageId = uuid.v4();
+            const messagesRef = firebase.database().ref(`messages/${chatId}`);
 
-            const messagesRef = firebase.database().ref(`messages/${chatId}/${messageId}`);
-
-            messagesRef.set({
+            messagesRef.push({
                 content: newMessage,
                 sender: 'usr01',
                 timestamp: Date.now()
