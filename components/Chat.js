@@ -20,33 +20,6 @@ class Chat extends React.Component {
 
         const messagesRef = firebase.database().ref(`messages/${chatId}`);
 
-        // messagesRef.once('value', (snapshot) => {
-
-        //     const messages = snapshot.val();
-
-        //     if (messages) {
-
-        //         const messagesObject = {};
-
-        //         for (var key in messages) {
-        //             const message = messages[key];
-        //             message.id = key;
-
-        //             messagesObject[key] = message;
-        //         }
-
-        //         this.setState(state => {
-        //             return {
-        //                 ...state,
-        //                 messages: {
-        //                     ...state.messages,
-        //                     ...messagesObject
-        //                 }
-        //             };
-        //         });
-        //     }
-        // });
-
         messagesRef.on('child_added', (data) => {
 
             const message = data.val();
@@ -63,9 +36,7 @@ class Chat extends React.Component {
                     }
                 }
             })
-
         });
-
     }
 
     sendMessage = () => {
@@ -91,15 +62,19 @@ class Chat extends React.Component {
         }
     }
 
+    _renderItem = ({item}) => (
+        <View style={{ padding: 10 }}>
+            <Text style={{ fontWeight: 'bold' }}>{item.sender}</Text>
+            <Text>{item.content}</Text>
+        </View>
+    )
 
     render() {
-        const messages = Object.values(this.state.messages);//.sort((a, b) => a.timestamp - b.timestamp);
+        const messages = Object.values(this.state.messages);
 
         return (
             <View style={ styles.container }>
-                <View style={{ flexGrow: 1, marginBottom: 5, backgroundColor: '#eee'}}>
-                    {messages.map(msg => (<Text key={msg.id}>{msg.content}</Text>))}
-                </View>
+                <FlatList style={{ flexGrow: 1, marginBottom: 5, backgroundColor: '#eee' }} data={messages} renderItem={this._renderItem} keyExtractor={(item) => item.id} />
 
                 <View style={{ flexDirection: 'row' }}>
                     <TextInput style={{ flexGrow: 1 }} value={this.state.newMessage} onChangeText={(text) => this.setState({ newMessage: text })} />
