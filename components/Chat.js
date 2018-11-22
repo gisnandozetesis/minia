@@ -10,6 +10,7 @@ class Chat extends React.Component {
 
     state = {
         messages: {},
+        members: {},
         newMessage: ''
     }
 
@@ -37,6 +38,18 @@ class Chat extends React.Component {
                 }
             })
         });
+
+        const membersRef = firebase.database().ref(`members/${chatId}`);
+        membersRef.on('value', (data) => {
+
+            const members = data.val();
+
+            this.setState({
+                members
+            });
+        });
+
+
     }
 
     sendMessage = () => {
@@ -62,12 +75,17 @@ class Chat extends React.Component {
         }
     }
 
-    _renderItem = ({item}) => (
-        <View style={{ padding: 10 }}>
-            <Text style={{ fontWeight: 'bold' }}>{item.sender}</Text>
-            <Text>{item.content}</Text>
-        </View>
-    )
+    _renderItem = ({item}) => {
+        const sender = this.state.members[item.sender];
+
+
+        return (
+            <View style={{ padding: 10 }}>
+                <Text style={{ fontWeight: 'normal' }}>{sender.name}</Text>
+                <Text>{item.content}</Text>
+            </View>
+        );
+    } 
 
     render() {
         const messages = Object.values(this.state.messages);

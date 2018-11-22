@@ -14,6 +14,11 @@ function GrayLine ({ margin }) {
 
 class Inbox extends React.Component {
 
+    goToChat = (space) => {
+
+        this.props.navigation.navigate('Chat', { chatId: space.chatId});
+    }
+
     _renderItem = ({item}) => (
         <View key={item.id} style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch', margin: 5 }}>
             <Ionicons style={{ marginHorizontal: 5 }} name='ios-image' size={50} color='blue' />
@@ -22,7 +27,7 @@ class Inbox extends React.Component {
                 
                 <GrayLine />
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Chat', { chatId: item.chatId })}>
+                <TouchableOpacity onPress={this.goToChat(item)}>
                     <View style={{ backgroundColor: '#f5f5f5', paddingVertical: 5 }}>
                         <Text style={{fontWeight: 'bold'}}>{item.lastMessage.sender}</Text>
                         <Text style={{ color: 'gray' }}>{item.lastMessage.content}</Text>
