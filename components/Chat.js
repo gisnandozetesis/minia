@@ -10,11 +10,13 @@ class Chat extends React.Component {
 
     state = {
         messages: {},
-        members: {},
+        members: null,
         newMessage: ''
     }
+    _currentSenderId = '';
 
     componentWillMount() {
+        this._currentSenderId = '';
 
         const { navigation } = this.props;
         const chatId = navigation.getParam('chatId', 'NO-ID');
@@ -48,9 +50,11 @@ class Chat extends React.Component {
                 members
             });
         });
-
-
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextState.members !== null; //this.state.members !== null;
+    }    
 
     sendMessage = () => {
         const { newMessage } = this.state;
@@ -75,13 +79,17 @@ class Chat extends React.Component {
         }
     }
 
+
     _renderItem = ({item}) => {
         const sender = this.state.members[item.sender];
 
+        const showSender = this._currentSenderId != item.sender;
+
+        this._currentSenderId = item.sender;
 
         return (
-            <View style={{ padding: 10 }}>
-                <Text style={{ fontWeight: 'normal' }}>{sender.name}</Text>
+            <View style={{ marginRight: 30, marginLeft: 3, marginTop: 3, padding: 3, backgroundColor: '#FFF5EB', borderRadius: 5 }}>
+                {showSender && (<Text style={{ fontWeight: 'bold' }}>{sender.name}</Text>)}
                 <Text>{item.content}</Text>
             </View>
         );
@@ -92,7 +100,7 @@ class Chat extends React.Component {
 
         return (
             <View style={ styles.container }>
-                <FlatList style={{ flexGrow: 1, marginBottom: 5, backgroundColor: '#eee' }} data={messages} renderItem={this._renderItem} keyExtractor={(item) => item.id} />
+                <FlatList style={{ flexGrow: 1, marginBottom: 5, backgroundColor: '#E8E2D1' }} data={messages} renderItem={this._renderItem} keyExtractor={(item) => item.id} />
 
                 <View style={{ flexDirection: 'row' }}>
                     <TextInput style={{ flexGrow: 1 }} value={this.state.newMessage} onChangeText={(text) => this.setState({ newMessage: text })} />

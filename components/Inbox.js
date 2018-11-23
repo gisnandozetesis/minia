@@ -27,7 +27,7 @@ class Inbox extends React.Component {
                 
                 <GrayLine />
 
-                <TouchableOpacity onPress={this.goToChat(item)}>
+                <TouchableOpacity onPress={() => this.goToChat(item)}>
                     <View style={{ backgroundColor: '#f5f5f5', paddingVertical: 5 }}>
                         <Text style={{fontWeight: 'bold'}}>{item.lastMessage.sender}</Text>
                         <Text style={{ color: 'gray' }}>{item.lastMessage.content}</Text>
