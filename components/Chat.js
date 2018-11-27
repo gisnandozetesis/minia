@@ -11,13 +11,11 @@ class Chat extends React.Component {
     state = {
         messages: {},
         members: null,
+        lastSender: null,
         newMessage: ''
     }
-    _currentSenderId = '';
 
     componentWillMount() {
-        this._currentSenderId = '';
-
         const { navigation } = this.props;
         const chatId = navigation.getParam('chatId', 'NO-ID');
 
@@ -31,8 +29,11 @@ class Chat extends React.Component {
 
             this.setState(state => {
 
+                message.previousSender = state.lastSender;
+
                 return {
                     ...state,
+                    lastSender: message.sender,
                     messages: {
                         ...state.messages,
                         [message.id]: message
@@ -53,7 +54,7 @@ class Chat extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return nextState.members !== null; //this.state.members !== null;
+        return nextState.members !== null;
     }    
 
     sendMessage = () => {
@@ -83,7 +84,7 @@ class Chat extends React.Component {
     _renderItem = ({item}) => {
         const sender = this.state.members[item.sender];
 
-        const showSender = this._currentSenderId != item.sender;
+        const showSender = !item.previousSender || item.previousSender !== item.sender;
 
         this._currentSenderId = item.sender;
 
